@@ -9,16 +9,35 @@ namespace C4._5
 {
     internal class DecisionTree
     {
-        public DataFrame TrainingDataFrame { get; set; }
-        public TreeNode DTree { get; set; }
-        public List<string> Classes { get; set; }
+        private DataFrame _trainingDataFrame;
+        private TreeNode _dtree;
+        private List<string> _classes;
+
+        public DataFrame trainingDataFrame
+        {
+            get { return _trainingDataFrame; }
+            set { _trainingDataFrame = value; }
+        }
+
+        public TreeNode dtree
+        {
+            get { return _dtree; }
+            set { _dtree = value; }
+        }
+
+        public List<string> classes
+        {
+            get { return _classes; }
+            set { _classes = value; }
+        }
+
         public DecisionTree(string csvName)
         {
             var originalDF = DataFrame.LoadCsv(csvName);
-            Classes = GetUniqueValuesFromColumn(originalDF, "Target");
-            TrainingDataFrame = originalDF;
-            TrainingDataFrame.Columns.Remove("id");
-            DTree = C45(TrainingDataFrame, "-",Classes);
+            _classes = GetUniqueValuesFromColumn(originalDF, "Target");
+            _trainingDataFrame = originalDF;
+            _trainingDataFrame.Columns.Remove("id");
+            _dtree = C45(_trainingDataFrame, "-",_classes);
         }
 
         public TreeNode C45(DataFrame DF, string value,List<string> ClassList)
@@ -32,15 +51,15 @@ namespace C4._5
             var UniqueTargetVal = GetUniqueValuesFromColumn(DF, "Target");
             if (UniqueTargetVal.Count == 1)
             {
-                return new TreeNode(true, FindMostInformativeFeature(DF,ClassList), value, UniqueTargetVal[0]);
+                return new TreeNode(true, FindMostInformativeAttribute(DF,ClassList), value, UniqueTargetVal[0]);
             }
             // It suppossedly means "when only the target column remains
             if (DF.Columns.Count == 1 && DF.Columns[0].Name == "Target")
             {
-                return new TreeNode(true, FindMostInformativeFeature(DF, ClassList), value, keyOfMaxValue);
+                return new TreeNode(true, FindMostInformativeAttribute(DF, ClassList), value, keyOfMaxValue);
             }
 
-            var BestAttribute = FindMostInformativeFeature(DF, ClassList);
+            var BestAttribute = FindMostInformativeAttribute(DF, ClassList);
             var node = new TreeNode(false, BestAttribute, keyOfMaxValue);
             var AttrValueList = GetUniqueValuesFromColumn(DF, BestAttribute);
             var dfSplit = DF;
@@ -51,8 +70,8 @@ namespace C4._5
                 boolFilter = dfSplit[BestAttribute].ElementwiseEquals(attr);
                 dfTemp = dfSplit.Filter(boolFilter);
                 dfTemp.Columns.Remove(dfTemp[BestAttribute]);
-                node.PreviousNodeValue = value;
-                node.Nodes.Add(C45(dfTemp, attr,ClassList));
+                node.previousNodeValue = value;
+                node.nodes.Add(C45(dfTemp, attr,ClassList));
             }
 
             return node;
@@ -74,18 +93,18 @@ namespace C4._5
         }
         */
 
-        public string Predecir(TreeNode tree, DataFrame test)
+        public string Predict(TreeNode tree, DataFrame test)
         {
-            if (tree.NodeIsLeaf)
+            if (tree.leaf)
             {
-                return tree.MajorityClass;
+                return tree.majorityClass;
             }
             else
             {
                 // MyClass result = list.Find(x => x.GetId() == "xy");
-                var val = GetUniqueValuesFromColumn(test, tree.BestAttribute)[0];
-                var nextBranch = tree.Nodes.Find(x => x.PreviousNodeValue == val);
-                return Predecir(nextBranch, test);
+                var val = GetUniqueValuesFromColumn(test, tree.bestAtt)[0];
+                var nextBranch = tree.nodes.Find(x => x.previousNodeValue == val);
+                return Predict(nextBranch, test);
             }
         }
 
@@ -176,7 +195,7 @@ namespace C4._5
             return GainRatio;
         }
 
-        public string FindMostInformativeFeature(DataFrame DF, List<string> ClassList)
+        public string FindMostInformativeAttribute(DataFrame DF, List<string> ClassList)
         {
             var AttributeList = new List<string>();
             var ColumnsList = DF.Columns.ToList();
@@ -188,7 +207,7 @@ namespace C4._5
             }
 
             double MaxGainRatio = -1;
-            string MaxInfoFeature = null;
+            string? MaxInfoFeature = null;
 
             foreach (var attribute in AttributeList)
             {

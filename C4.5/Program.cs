@@ -14,10 +14,10 @@ for(int i = 0; i < testDF.Rows.Count; i++)
     boolFilter = testDF["id"].ElementwiseEquals(i);
     dfTemp = testDF.Filter(boolFilter);
     dfTemp.Columns.Remove("id");
-    Console.WriteLine(dt.Predecir(dt.DTree, dfTemp));
+    Console.WriteLine(dt.Predict(dt.dtree, dfTemp));
 }
 
-Console.WriteLine(dt.TrainingDataFrame["Outlook"].DataType);
+Console.WriteLine(dt.trainingDataFrame["Outlook"].DataType);
 
 //var dtest = DataFrame.LoadCsv("tennis_test.csv");
 /*

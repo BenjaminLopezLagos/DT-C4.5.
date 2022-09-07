@@ -14,44 +14,75 @@ namespace C4._5
     }
     internal class TreeNode
     {
-        public bool NodeIsLeaf { get; set; }
-        public string BestAttribute { get; set; }
-        public string PreviousNodeValue { get; set; }
-        public string MajorityClass { get; set; }
-        public List<TreeNode> Nodes { get; set; }
+        private bool _leaf;
+        private string _bestAtt;
+        private string _previousNodeValue;
+        private string _majorityClass;
+        private List<TreeNode> _nodes;
+
+        public bool leaf
+        {
+            get { return _leaf; }
+            set { _leaf = value; }
+        }
+
+        public string bestAtt
+        {
+            get { return _bestAtt; }
+            set { _bestAtt = value; }
+        }
+
+        public string previousNodeValue
+        {
+            get { return _previousNodeValue; }
+            set { _previousNodeValue = value; }
+        }
+
+        public string majorityClass
+        {
+            get { return _majorityClass; }
+            set { _majorityClass = value; }
+        }
+
+        public List<TreeNode> nodes
+        {
+            get { return _nodes; }
+            set
+            { _nodes = value; }
+        }
 
         public TreeNode()
         {
-            NodeIsLeaf = false;
-            MajorityClass = "xd";
-            BestAttribute = "-";
-            PreviousNodeValue = "-";
-            Nodes = new List<TreeNode>();
+            _leaf = false;
+            _majorityClass = "xd";
+            _bestAtt = "-";
+            _previousNodeValue = "-";
+            _nodes = new List<TreeNode>();
         }
         public TreeNode(bool nodeIsLeaf, string majorityClass)
         {
-            NodeIsLeaf = nodeIsLeaf;
-            MajorityClass = majorityClass;
-            BestAttribute = "-";
-            PreviousNodeValue = "-";
-            Nodes = new();
+            _leaf = nodeIsLeaf;
+            _majorityClass = majorityClass;
+            _bestAtt = "-";
+            _previousNodeValue = "-";
+            _nodes = new();
         }
 
         public TreeNode(bool nodeIsLeaf, string bestAttribute,string majorityClass)
         {
-            NodeIsLeaf = nodeIsLeaf;
-            MajorityClass = majorityClass;
-            BestAttribute = bestAttribute;
-            PreviousNodeValue = "-";
-            Nodes = new();
+            _leaf = nodeIsLeaf;
+            _majorityClass = majorityClass;
+            _bestAtt = bestAttribute;
+            _previousNodeValue = "-";
+            _nodes = new();
         }
         public TreeNode(bool nodeIsLeaf, string bestAttribute, string value, string majorityClass)
         {
-            NodeIsLeaf = nodeIsLeaf;
-            MajorityClass = majorityClass;
-            BestAttribute = bestAttribute;
-            PreviousNodeValue = value;
-            Nodes = new();
+            _leaf = nodeIsLeaf;
+            _majorityClass = majorityClass;
+            _bestAtt = bestAttribute;
+            _previousNodeValue = value;
+            _nodes = new();
         }
     }
 }
